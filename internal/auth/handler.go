@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"errors"
+	"log"
 	"net/http"
 	"time"
 
@@ -68,7 +69,8 @@ func (h *Handler) handleRegister(c *gin.Context) {
 		RETURNING *
 	`, req.Name, req.Phone, req.Email, hash).StructScan(&user)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create user"})
+		log.Printf("ERROR creating user: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create user: " + err.Error()})
 		return
 	}
 
@@ -77,7 +79,8 @@ func (h *Handler) handleRegister(c *gin.Context) {
 		INSERT INTO wallets (user_id) VALUES ($1)
 	`, user.ID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create wallet"})
+		log.Printf("ERROR creating wallet: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create wallet: " + err.Error()})
 		return
 	}
 
