@@ -1,0 +1,8 @@
+[phases.install]
+cmds = ["go mod download", "go mod tidy"]
+
+[phases.build]
+cmds = ["go build -ldflags='-w -s' -o out ./cmd/server"]
+
+[start]
+cmd = "./out"
