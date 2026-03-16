@@ -18,7 +18,8 @@ type User struct {
 	DateOfBirth   *time.Time `db:"date_of_birth"  json:"date_of_birth,omitempty"`
 	CreatedAt     time.Time  `db:"created_at"     json:"created_at"`
 	UpdatedAt     time.Time  `db:"updated_at"     json:"updated_at"`
-	SuspendedAt   *time.Time `db:"suspended_at"   json:"suspended_at,omitempty"`
+	SuspendedAt     *time.Time `db:"suspended_at"     json:"suspended_at,omitempty"`
+	SuspendedReason *string    `db:"suspended_reason" json:"suspended_reason,omitempty"`
 }
 
 // ── Wallets ───────────────────────────────────────────────────
