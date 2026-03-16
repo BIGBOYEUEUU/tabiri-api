@@ -327,14 +327,27 @@ func (s *Service) InitiateWithdrawal(userID uuid.UUID, amountKES float64, phone 
 	return &mpesaReq, err
 }
 
+func (s *Service) HandleDeposit(c *gin.Context) {
+	s.handleDeposit(c)
+}
+
+func (s *Service) HandleWithdraw(c *gin.Context) {
+	s.handleWithdraw(c)
+}
+
+func (s *Service) HandleB2CResult(c *gin.Context) {
+	s.handleB2CResult(c)
+}
+
+func (s *Service) HandleB2CTimeout(c *gin.Context) {
+	s.handleB2CTimeout(c)
+}
+
 // ── HTTP Handlers ──────────────────────────────────────────────
 
 func (s *Service) RegisterRoutes(r *gin.RouterGroup) {
-	// Authenticated
 	r.POST("/deposit",  s.handleDeposit)
 	r.POST("/withdraw", s.handleWithdraw)
-
-	// Safaricom callbacks — no auth (validated by IP + content)
 	r.POST("/callback",        s.HandleDepositCallback)
 	r.POST("/b2c/result",      s.handleB2CResult)
 	r.POST("/b2c/timeout",     s.handleB2CTimeout)

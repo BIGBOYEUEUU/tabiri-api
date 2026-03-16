@@ -67,9 +67,6 @@ func main() {
 	// Markets — public read
 	marketSvc.RegisterPublicRoutes(v1.Group("/markets"))
 
-	// M-Pesa callbacks — public (Safaricom servers)
-	v1.POST("/mpesa/callback",    mpesaSvc.HandleDepositCallback)
-
 	// ── Authenticated routes ─────────────────────────────────────
 	authed := v1.Group("")
 	authed.Use(middleware.Authenticate(authSvc))
@@ -77,9 +74,13 @@ func main() {
 	// Wallet
 	walletSvc.RegisterRoutes(authed.Group("/wallet"))
 
-	// M-Pesa deposit/withdraw (requires auth)
-	mpesaRoutes := authed.Group("/mpesa")
-	mpesaSvc.RegisterRoutes(mpesaRoutes)
+	// M-Pesa — authenticated deposit/withdraw + public callbacks
+	authed.POST("/mpesa/deposit",  mpesaSvc.HandleDeposit)
+	authed.POST("/mpesa/withdraw", mpesaSvc.HandleWithdraw)
+	// Safaricom callbacks — no auth required
+	v1.POST("/mpesa/callback",     mpesaSvc.HandleDepositCallback)
+	v1.POST("/mpesa/b2c/result",   mpesaSvc.HandleB2CResult)
+	v1.POST("/mpesa/b2c/timeout",  mpesaSvc.HandleB2CTimeout)
 
 	// Orders + positions (requires auth + KYC)
 	kyc := authed.Group("")
